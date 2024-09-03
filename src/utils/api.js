@@ -39,20 +39,17 @@ api.interceptors.response.use(
   }
 );
 
-// 기존 API 함수들
-export const login = (credentials) => api.post('/users/login', credentials, { withCredentials: true });
+// API 함수들
+export const login = (credentials) => api.post('/users/login', credentials);
 export const getUserInfo = () => api.get('/users/profile');
 export const startExam = () => api.post('/exam/start');
 export const getQuestions = (examId) => api.get(`/exam/${examId}/questions`);
 export const submitAnswer = (examId, questionId, answer) => 
   api.post(`/exam/${examId}/submit-answer`, { questionId, answer });
-
 export const getExamResult = () => api.get('/exam/results/user');
-
 export const submitStrangeExplanations = (examId, explanations) => 
   api.post(`/exam/${examId}/strange-explanations`, { explanations });
 
-// 새로 추가된 API 함수들
 export const getAllQuestions = () => api.get('/questions');
 export const createQuestion = (questionData) => api.post('/questions', questionData);
 export const updateQuestion = (id, questionData) => api.put(`/questions/${id}`, questionData);
