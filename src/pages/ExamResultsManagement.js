@@ -84,7 +84,9 @@ const ExamResultsManagement = () => {
                 <Td>{result.endTime ? new Date(result.endTime).toLocaleDateString() : 'N/A'}</Td>
                 <Td>{result.score !== undefined ? result.score : 'N/A'}</Td>
                 <Td>
-                <ViewButton to={`/admin/user-responses/${result._id}`}>View Details</ViewButton>
+                <ViewButton to={`/admin/user-responses/${result._id}`}>
+                  View Details (ID: {result._id})
+                </ViewButton>
                 </Td>
               </tr>
             ))}

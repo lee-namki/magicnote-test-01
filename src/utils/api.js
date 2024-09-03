@@ -1,9 +1,11 @@
-// src/utils/api.js
-
 import axios from 'axios';
 
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  }
 });
 
 export const setToken = (token) => {
@@ -38,7 +40,7 @@ api.interceptors.response.use(
 );
 
 // 기존 API 함수들
-export const login = (credentials) => api.post('/users/login', credentials);
+export const login = (credentials) => api.post('/users/login', credentials, { withCredentials: true });
 export const getUserInfo = () => api.get('/users/profile');
 export const startExam = () => api.post('/exam/start');
 export const getQuestions = (examId) => api.get(`/exam/${examId}/questions`);
@@ -49,14 +51,13 @@ export const getExamResult = () => api.get('/exam/results/user');
 
 export const submitStrangeExplanations = (examId, explanations) => 
   api.post(`/exam/${examId}/strange-explanations`, { explanations });
+
 // 새로 추가된 API 함수들
-// 문제 관리 API 함수
 export const getAllQuestions = () => api.get('/questions');
 export const createQuestion = (questionData) => api.post('/questions', questionData);
 export const updateQuestion = (id, questionData) => api.put(`/questions/${id}`, questionData);
 export const deleteQuestion = (id) => api.delete(`/questions/${id}`);
 
-// 사용자 관리 API 함수
 export const getAllUsers = () => api.get('/admin/users');
 export const createUser = (userData) => api.post('/admin/users', userData);
 export const updateUser = (id, userData) => api.put(`/admin/users/${id}`, userData);
