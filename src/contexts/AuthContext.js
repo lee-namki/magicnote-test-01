@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { getToken, removeToken, getUserInfo, refreshToken } from '../utils/api';
+import { getToken, removeToken, getUserInfo, refreshToken, setToken } from '../utils/api';
 
 const AuthContext = createContext();
 
@@ -49,7 +49,9 @@ export const AuthProvider = ({ children }) => {
   const refreshUserToken = async () => {
     try {
       const newToken = await refreshToken();
-      // 여기서 새 토큰을 저장하고 사용자 정보를 업데이트합니다.
+      setToken(newToken);
+      const userData = await getUserInfo();
+      setUser(userData);
     } catch (err) {
       console.error('Failed to refresh token:', err);
       logout();

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getQuestions, submitAnswer } from '../utils/api';
-import { useAuth } from '../contexts/AuthContext';
 import ErrorMessage from '../components/ErrorMessage';
 import LoadingSpinner from '../components/LoadingSpinner';
 
@@ -52,7 +51,6 @@ const ExamPage = () => {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const { examId } = useParams();
-  const { user } = useAuth();
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -71,13 +69,19 @@ const ExamPage = () => {
   }, [examId]);
 
   useEffect(() => {
-    if (timeLeft > 0) {
-      const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-      return () => clearTimeout(timer);
-    } else {
-      handleAnswer(null);
-    }
-  }, [timeLeft]);
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          handleAnswer(null);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQuestionIndex]);
 
   const handleAnswer = async (answer) => {
     try {
