@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { getQuestions, submitAnswer } from '../utils/api';
@@ -68,22 +68,7 @@ const ExamPage = () => {
     fetchQuestions();
   }, [examId]);
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          handleAnswer(null);
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentQuestionIndex]);
-
-  const handleAnswer = async (answer) => {
+  const handleAnswer = useCallback(async (answer) => {
     try {
       setLoading(true);
       await submitAnswer(examId, questions[currentQuestionIndex]._id, answer);
@@ -99,7 +84,22 @@ const ExamPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [examId, questions, currentQuestionIndex, navigate]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          handleAnswer(null);
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [currentQuestionIndex, handleAnswer]);
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorMessage message={error} />;
